@@ -13,15 +13,6 @@ export default class TodoItem extends Component {
     const { id, title } = this.props.todo;
 
     return (
-      //   <div className="btn-secondary">
-      //     <p style={this.getTodoStyle()}>
-      //       <input
-      //         type="checkbox"
-      //         onChange={this.props.markComplete.bind(this, id)}
-      //       />{" "}
-      //       {title}
-      //     </p>
-      // </div>
       <div
         className="btn-ternary btn-lg"
         style={this.getTodoStyle()}

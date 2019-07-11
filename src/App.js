@@ -1,6 +1,11 @@
-import Todos from "./components/Todos";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
+import Todos from "./components/Todos";
 import React, { Component } from "react";
+import NewTodo from "./components/NewTodo";
+import About from "./components/pages/About";
+
+const uuidv1 = require("uuid/v1");
 
 export default class App extends Component {
   state = {
@@ -12,46 +17,80 @@ export default class App extends Component {
   };
 
   markComplete = id => {
-    this.setState({
-      todos: this.state.todos.map(x => {
+    this.setState(state => ({
+      todos: state.todos.map(x => {
         if (x.id === id) {
           x.completed = !x.completed;
         }
         return x;
       })
-    });
+    }));
   };
 
   delTodo = id => {
-    const todosFiltered = this.state.todos.filter(x => x.id !== id);
+    this.setState(state => ({
+      todos: state.todos.filter(x => x.id !== id)
+    }));
+  };
 
-    this.setState({
-      todos: todosFiltered
-    });
+  newTodo = title => {
+    const newTodo = {
+      id: uuidv1(),
+      title,
+      completed: false
+    };
+    console.log(newTodo.id);
+    this.setState(state => ({
+      todos: [...this.state.todos, newTodo]
+    }));
   };
 
   render() {
     return (
-      <div
-        className="App"
-        style={{
-          backgroundColor: "#e4e4e4",
-          display: "flex",
-          justifyContent: "center"
-        }}
-      >
-        <div className="col-md-8" style={itemStyle}>
-          <br />
-          <h1>Minima-list</h1>
-          <nav>A minimalistic todo-list application.</nav>
-          <hr />
-          <Todos
-            todos={this.state.todos}
-            markComplete={this.markComplete}
-            delTodo={this.delTodo}
-          />
+      <Router>
+        <div
+          className="App"
+          style={{
+            backgroundColor: "#e4e4e4",
+            display: "flex",
+            justifyContent: "center"
+          }}
+        >
+          <div className="col-md-12" style={itemStyle}>
+            <br />
+            <a href="/">
+              <img
+                style={{ alignItems: "center", width: "120px" }}
+                src={require("./prayer.svg")}
+                alt="Minima-List"
+              />
+            </a>
+            <h1>Minima-list</h1>
+            <hr />
+
+            <Route
+              exact
+              path="/"
+              render={props => (
+                <React.Fragment>
+                  <nav>
+                    A minimalistic todo-list application.{" "}
+                    <a href="/about">About</a>.
+                  </nav>
+                  <hr />
+                  <NewTodo newTodo={this.newTodo} />{" "}
+                  <Todos
+                    todos={this.state.todos}
+                    markComplete={this.markComplete}
+                    delTodo={this.delTodo}
+                  />
+                </React.Fragment>
+              )}
+            />
+            <Route path="/about" component={About} />
+          </div>
         </div>
-      </div>
+      </Router>
     );
   }
 }
